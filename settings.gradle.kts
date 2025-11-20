@@ -1,3 +1,6 @@
+// Apply the init script for SSL handling
+apply(from = "init.gradle")
+
 pluginManagement {
     repositories {
         google {
