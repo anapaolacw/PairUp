@@ -1,0 +1,44 @@
+<resources>
+    <string name="app_name">PairUp</string>
+
+    <!-- Main Screen -->
+    <string name="welcome_title">Pickleball Tournament</string>
+    <string name="welcome_subtitle">Organize your games with ease</string>
+    <string name="btn_with_names">Add Players with Names</string>
+    <string name="btn_anonymous">Add Players by Count</string>
+
+    <!-- Player Input -->
+    <string name="player_input_title">Add Players</string>
+    <string name="hint_player_count">Number of Players</string>
+    <string name="hint_player_name">Player Name</string>
+    <string name="btn_add_player">Add Player</string>
+    <string name="btn_start_tournament">Start Tournament</string>
+    <string name="players_added">Players Added: %1$d</string>
+    <string name="error_invalid_count">Please enter a valid number (minimum 4)</string>
+    <string name="error_empty_name">Please enter a player name</string>
+    <string name="error_min_players">You need at least 4 players to start</string>
+
+    <!-- Round Screen -->
+    <string name="round_title">Round %1$d</string>
+    <string name="match_title">Match %1$d</string>
+    <string name="team_vs">vs</string>
+    <string name="resting_players">Resting: %1$s</string>
+    <string name="btn_enter_score">Enter Score</string>
+    <string name="btn_next_round">Next Round</string>
+    <string name="btn_end_tournament">End Tournament</string>
+    <string name="score_format">%1$d - %2$d</string>
+    <string name="match_completed">✓ Completed</string>
+
+    <!-- Score Dialog -->
+    <string name="dialog_score_title">Enter Match Score</string>
+    <string name="team_1_score">Team 1 Score</string>
+    <string name="team_2_score">Team 2 Score</string>
+    <string name="btn_save_score">Save Score</string>
+    <string name="btn_cancel">Cancel</string>
+
+    <!-- Results Screen -->
+    <string name="results_title">Tournament Results</string>
+    <string name="rank_format">#%1$d</string>
+    <string name="player_stats">Wins: %1$d | Games: %2$d | Score: %3$d</string>
+    <string name="btn_new_tournament">New Tournament</string>
+</resources>

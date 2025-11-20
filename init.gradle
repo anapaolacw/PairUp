@@ -1,0 +1,31 @@
+// Gradle init script to handle SSL certificate issues in corporate environments
+import javax.net.ssl.*
+import java.security.cert.X509Certificate
+
+// Create a trust manager that accepts all certificates
+def trustAllCerts = [
+    new X509TrustManager() {
+        X509Certificate[] getAcceptedIssuers() { return null }
+        void checkClientTrusted(X509Certificate[] certs, String authType) { }
+        void checkServerTrusted(X509Certificate[] certs, String authType) { }
+    }
+] as TrustManager[]
+
+// Install the all-trusting trust manager
+try {
+    def sc = SSLContext.getInstance("SSL")
+    sc.init(null, trustAllCerts, new java.security.SecureRandom())
+    HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory())
+    
+    // Create all-trusting host name verifier
+    def allHostsValid = [
+        verify: { String hostname, SSLSession session -> true }
+    ] as HostnameVerifier
+    
+    HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid)
+    
+    println "SSL certificate verification disabled for Gradle repositories"
+} catch (Exception e) {
+    println "Failed to disable SSL verification: ${e.message}"
+}
+
