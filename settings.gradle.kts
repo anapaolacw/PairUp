@@ -15,6 +15,12 @@ pluginManagement {
         maven {
             url = uri("https://maven.pkg.jetbrains.space/kotlin/p/kotlin/dev")
         }
+        // Allow all repositories to use HTTP if needed
+        all {
+            if (this is UrlArtifactRepository) {
+                isAllowInsecureProtocol = true
+            }
+        }
     }
 }
 dependencyResolutionManagement {
@@ -22,6 +28,12 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        // Allow all repositories to use HTTP if needed
+        all {
+            if (this is UrlArtifactRepository) {
+                isAllowInsecureProtocol = true
+            }
+        }
     }
 }
 

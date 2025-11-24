@@ -1,34 +1,47 @@
 import javax.net.ssl.*
 import java.security.cert.X509Certificate
+import java.security.SecureRandom
 
-System.setProperty("javax.net.ssl.trustStore", "")
-System.setProperty("javax.net.ssl.trustStoreType", "")
-System.setProperty("javax.net.ssl.trustStorePassword", "")
-System.setProperty("jdk.tls.client.protocols", "TLSv1.2,TLSv1.3")
-
-def trustAllCerts = [
-    new X509TrustManager() {
-        X509Certificate[] getAcceptedIssuers() { return [] as X509Certificate[] }
-        void checkClientTrusted(X509Certificate[] certs, String authType) { }
-        void checkServerTrusted(X509Certificate[] certs, String authType) { }
+// SSL bypass for corporate networks - disables certificate validation
+allprojects {
+    buildscript {
+        repositories.all { ArtifactRepository repo ->
+            if (repo instanceof UrlArtifactRepository) {
+                def urlRepo = repo as UrlArtifactRepository
+                urlRepo.allowInsecureProtocol = true
+            }
+        }
     }
-] as TrustManager[]
+    repositories.all { ArtifactRepository repo ->
+        if (repo instanceof UrlArtifactRepository) {
+            def urlRepo = repo as UrlArtifactRepository
+            urlRepo.allowInsecureProtocol = true
+        }
+    }
+}
 
 try {
-    def sc = SSLContext.getInstance("TLS")
-    sc.init(null, trustAllCerts, new java.security.SecureRandom())
-    HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory())
-    SSLContext.setDefault(sc)
+    def trustAllCerts = [
+        new X509TrustManager() {
+            X509Certificate[] getAcceptedIssuers() { return null }
+            void checkClientTrusted(X509Certificate[] certs, String authType) {}
+            void checkServerTrusted(X509Certificate[] certs, String authType) {}
+        }
+    ] as TrustManager[]
 
-    def allHostsValid = [
-        verify: { String hostname, SSLSession session -> true }
-    ] as HostnameVerifier
-    
-    HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid)
-    
-    println "SSL certificate verification disabled for Gradle repositories"
+    def sslContext = SSLContext.getInstance("TLS")
+    sslContext.init(null, trustAllCerts, new SecureRandom())
+
+    HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.socketFactory)
+    HttpsURLConnection.setDefaultHostnameVerifier({ hostname, session -> true } as HostnameVerifier)
+
+    // Also set the default socket factory
+    SSLContext.setDefault(sslContext)
+
+    println "✓ SSL certificate verification bypassed for Gradle"
 } catch (Exception e) {
-    println "Failed to disable SSL verification: " + e.message
+    println "✗ Warning: SSL bypass failed: ${e.message}"
+    e.printStackTrace()
 }
 
 
